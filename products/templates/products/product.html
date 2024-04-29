@@ -1,0 +1,123 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block css %}
+<style src="products/style.css"></style>
+{% endblock %}
+
+{% block content %}
+        <div class="container">
+            <div class="row">
+                <div class="col-lg">
+                    <div class="col">
+                        <h5>Артикул: {{ product.article }}</h5>
+                        <hr>
+                        <form method="post" id="add_to_cart_form_id" action="{% url 'cart:add_to_cart' product.id %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <div class="col-lg col-md-6">
+
+                                <select name="material" id="materialSelect" class="form-select" aria-label="Материал">
+                                    <option value="#" selected style="display:none">Материал</option>
+                                    {% for material in product.material.all %}
+                                        <option value="{{ material.id }}">{{ material.name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <hr>
+
+                                <select name="color" id="colorSelect" class="form-select" aria-label="Цвет">
+                                    <option value="#" selected style="display:none">Цвет</option>
+                                    {% for color in product.color.all %}
+                                        <option value="{{ color.id }}">{{ color.name }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <hr>
+
+                                <select name="size" id="sizeSelect" class="form-select" aria-label="Цвет">
+                                    <option value="" selected style="display:none">Размер</option>
+                                </select>
+
+                                <script src="{% static 'vendor/js/sizes.js' %}"></script>
+                                <hr>
+                                
+                            </div>
+                            <br>
+                            <button type="submit" class="btn btn-primary">Добавить в корзину</button>
+
+                        </form>
+                    </div>
+
+                </div>
+
+
+
+                <div class="col-lg-4 col-md-6">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="img-fluid mb-2"/>
+                    {% else %}
+                        <img src="{{ '/media/imgs/default.PNG'}}" class="img-fluid mb-2">
+                    {% endif %}
+                </div>
+
+                <div class="col-lg-4 col-md-6">
+                    
+                    {% if user.is_autenthicated %}
+                    <form action="{% url 'products:update_product_image' product.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ image_form.as_p }}
+                        <button type="submit">Загрузить новое изображение</button>
+                    </form>
+                    {% else %}
+                        {% include 'cart/cart_detail.html' %}
+                    {% endif %}
+                </div>
+            </div>
+            <div class="row" title="Категория: {{ product.category }}">
+                <p class="gy-5">Категория: {{ product.category }}</p>
+                {% for product in similar_products %}
+                    <div class="col-lg-3 col-md-6 mb-4 ">
+
+                        <div class="card h-100">
+                            <a href="{% url 'products:detail' product.id %}">
+                                {% if product.image %}
+                                    <img src="{{ product.image.url }}" class="img-fluid mb-2"/>
+                                {% else %}
+                                    <img src="{{ '/media/imgs/default.PNG'}}" class="img-fluid mb-2">
+                                {% endif %}
+                            </a>
+                            <div class="card-body">
+                                <h4 class="card-title">
+                                <p class="article">Артикул: {{ product.article }}</p>
+                                {% if product.name %}
+                                    <a href="{% url 'products:detail' product.id %}">{{ product.name }}</a>
+                                {% else %}
+                                    <a href="{% url 'products:detail' product.id %}">Добавьте Наименование</a>
+                                {% endif %}
+                                </h4>
+                                <p>Материал:
+                                    {% if product.material.all %}
+                                        {% for material in product.material.all %}
+                                            {{ material }}
+                                        {% endfor %}
+                                    {% else %}
+                                    -
+                                    {% endif %}
+                                </p>
+                                <p>Цвет:
+                                    {% for color in product.color.all %}
+                                        {{ color }}
+                                    {% endfor %}
+                                </p>
+                                <p class="card-text">{{ product.description }}</p>
+                            </div>
+                            <div class="card-footer text-center">
+                                <b>Цена: {{ product.price }}тг.</b>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+{% endblock %}

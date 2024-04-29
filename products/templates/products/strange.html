@@ -1,0 +1,16 @@
+
+
+
+{% for product in products %}
+    {{ product.article}}
+
+    {% for material in product.material.all %}
+        {{ material.name }}
+    {% endfor %}
+    
+    {% for color in product.color.all %}
+        {{ color.name }}
+    {% endfor %}
+        
+{% endfor %}
+    

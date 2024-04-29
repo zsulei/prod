@@ -1,0 +1,10 @@
+                    {% if user.is_superuser %}
+                    Hello, {{ user }}
+                <form action="{% url 'products:update_product_image' product.id %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Загрузить новое изображение</button>
+                </form>
+                    {% else %}
+                    {% include 'cart/cart_detail.html' %}
+                    {% endif %}

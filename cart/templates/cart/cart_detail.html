@@ -1,0 +1,43 @@
+
+
+<body>
+    {% block content %}
+    {% if user.is_superuser %}
+    {% else %}
+    <h1>Ваша корзина</h1>
+    {% if cart.items.count > 0 %}
+        <ul>
+            {% for item in cart.items.all %}
+                <li>
+                    <form method="post" action="{% url 'cart:rm_from_cart' item.product.id item.material.id item.color.id item.size.id%}">
+                        {% csrf_token %}
+                    Артикул: {{ item.product.article }}
+                    <br>
+                    Материал: {{ item.material }}
+                    <br>
+                    Цвет: {{ item.color }}
+                    <br>
+                    Размер: {{ item.size}}
+                    <br> 
+                    Количество: {{ item.quantity }}
+                    <br>
+                    Цена за единицу: {{ item.product.price }}
+                    <br>
+                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                    <hr>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+        
+        <p>Всего товаров в корзине: {{ cart.items.count }}</p>
+        <p>Общая стоимость:
+            {{ total }}
+        </p>
+        <a href="{% url 'cart:order_create' %}" class="btn btn-primary">Оформить заказ</a>
+    {% else %}
+        <p>Ваша корзина пуста.</p>
+    {% endif %}
+    {% endif %}
+    {% endblock %}
+</body>

@@ -1,0 +1,116 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container bg-secondary ">
+    <a href="{% url 'products:parse_tsgoods' %}">parse</a>
+    <a href="{% url 'products:delete' %}">Remove ALL</a>
+    <div class="row">
+
+        <div class="col-lg-3">
+
+            <h2 class="mt-5">Outlet Obuv</h2>
+            <br>
+            <div class="list-group tab-content">
+
+                {% for category in categories %}
+                        <a  href="{% url 'products:category' category.id %}"
+                           class="list-group-item list-group-item-action">{{ category.title }}</a>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="col-lg-9">
+
+<!--            <div id="carouselExampleIndicators" class="carousel slide my-4" data-ride="carousel">-->
+<!--                <ol class="carousel-indicators">-->
+<!--                    <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>-->
+<!--                    <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>-->
+<!--                    <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>-->
+<!--                </ol>-->
+
+<!--                <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">-->
+<!--                    <span class="carousel-control-next-icon" aria-hidden="true"></span>-->
+<!--                    <span class="sr-only">Next</span>-->
+<!--                </a>-->
+<!--            </div>-->
+
+            <div class="row">
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="card h-100">
+                        <a href="{% url 'products:detail' product.id %}">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" class="img-fluid mb-2" />
+                            {% else %}
+                            <img src="{{ '/media/imgs/default.PNG'}}" class="img-fluid mb-2">
+                            {% endif %}
+                        </a>
+                        <div class="card-body">
+                            <h4 class="card-title">
+                                <p>Артикул: {{ product.article }}</p>
+                            </h4>
+                            <p>Материал:
+                                {% for material in product.material.all %}
+                            <ul>
+                                <li>{{ material }}</li>
+                            </ul>
+                            {% endfor %}
+                            </p>
+                            <p>Цвет:
+                                {% for color in product.color.all %}
+                                {{ color }}
+                                {% endfor %}
+                            </p>
+                            <p class="card-text">{{ product.description }}</p>
+                        </div>
+                        <div class="card-footer text-center">
+                            Цена: <b>{{ product.price }} тг</b>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if not page_obj.has_previous %} disabled {% endif %}">
+                        <a class="page-link bg-primary"
+                            href="{% if page_obj.has_previous.has_previous %} {% url 'products:paginator' products.previous_page_number %} {% else %} # {% endif %}"
+                            tabindex="-1" aria-disabled="true">Предыдущая</a>
+                    </li>
+
+                    {% with current=page_obj.number max_pages=page_obj.paginator.num_pages %}
+                    {% for page in page_obj.paginator.page_range %}
+                    {% if page >= current|add:'-3' and page <= current|add:'3' %} <li
+                        class="page-item {% if page == current %} active {% endif %}">
+                        <a class="page-link bg-primary" href="{% url 'products:paginator' page %}">
+                            {{ page }}
+                        </a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+                        {% endwith %}
+
+                        <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
+                            <a class="page-link bg-primary"
+                                href="{% if page_obj.has_next %} {% url 'products:paginator' page_obj.next_page_number %} {% else %} # {% endif %}">Следующая</a>
+                        </li>
+                </ul>
+            </nav>
+
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

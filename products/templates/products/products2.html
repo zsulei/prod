@@ -1,0 +1,60 @@
+    asdasdasd
+<div class="row">
+    {% for product in products %}
+        <div class="col-lg-4 col-md-6 mb-4">
+        <div class="card h-100">
+            <a href="{% url 'products:detail' product.id %}">
+        {% comment %} {% if product.image %}
+            <img src="{{ product.image.url }}" class="img-fluid mb-2"/>
+        {% else %}
+            <img src="{{ '/media/imgs/default.PNG'}}" class="img-fluid mb-2">
+        {% endif %} {% endcomment %}
+            </a>
+            <div class="card-body">
+                <h4 class="card-title">
+                <p class="article">Артикул: {{ product.article }}</p>
+                {% if product.name %}
+                    <a href="{% url 'products:detail' product.id %}">{{ product.name }}</a>
+                {% else %}
+                    <a href="{% url 'products:detail' product.id %}">Добавьте Наименование</a>
+                {% endif %}
+                </h4>
+                <p>Material: {{ product.materials }}</p>
+                <h5> Цена: {{ product.price }}</h5>
+                <p class="card-text">{{ product.description }}</p>
+            </div>
+            <div class="card-footer text-center">
+
+                {% comment %} <a class="btn btn-outline-success" href="{% url 'orders:cart_add' product.id %}">Отправить в корзину</a>-->
+                <form action="{% url 'orders:cart_add' product.id %}" method="post">--> {% endcomment %}
+                    {% comment %} {{ cart_product_form }}
+                    {% csrf_token %}
+                    <input type="submit" value="Add to cart">
+                </form> {% endcomment %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div><nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        <li class="page-item {% if not products.has_previous %} disabled {% endif %}">
+            <a class="page-link" href="{% if products.has_previous %} {% url 'products:paginator' products.previous_page_number %} {% else %} # {% endif %}"
+               tabindex="-1" aria-disabled="true">Предыдущая</a>
+        </li>
+        {% with current=products.number max_pages=products.paginator.num_pages %}
+            {% for page in products.paginator.page_range %}
+                {% if page >= current|add:'-3' and page <= current|add:'3' %}
+                    <li class="page-item {% if page == current %} active {% endif %}">
+                        <a class="page-link" href="{% url 'products:paginator' page %}">
+                            {{ page }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        {% endwith %}
+        <li class="page-item {% if not products.has_next %} disabled {% endif %}">
+            <a class="page-link" href="{% if products2.has_next %} {% url 'products:paginator' products.next_page_number %} {% else %} # {% endif %}"
+            >Следующая</a>
+        </li>
+    </ul>
+</nav>

@@ -1,0 +1,33 @@
+{% extends 'products/base.html' %}
+{% load static %}
+
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+<!-- Page Content -->
+<section>
+    <!--    <div class="alert alert-light text-center" role="alert">-->
+    <!--        Информационное сообщение-->
+    <!--    </div>-->
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <h1 class="mt-5">Outlet Obuv</h1>
+                <p>
+                    Доставка по всему миру!
+                    {% if is_promotion %}
+                    {% endif %}
+                </p>
+                <button id="start-purchase-btn" type="button" class="btn btn-lg">
+                    <a id="start-purchase-link" href="{% url 'products:paginator' 1 %}">
+                        Начать покупки
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
